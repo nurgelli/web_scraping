@@ -1,5 +1,5 @@
 from requests_html import HTMLSession
-
+import csv
 
 
 
@@ -8,6 +8,7 @@ sess = HTMLSession()
 
 def get_links(page):
     
+       
     url = sess.get(f'https://themes.woocommerce.com/storefront/category-clothing/clothing/page/{page}')
     products = url.html.find('ul.products li ')
     links = [item.find('a', first=True).attrs['href'] for item in products]  
@@ -26,7 +27,6 @@ def parse_product_links(url):
         sku = element.html.find('span.sku', first=True).text.strip()
     except AttributeError as err:
         sku = 'None'
-        
     try:
         tag = element.html.find('span.tagged_as', first=True).text.strip()
     except AttributeError as err:
@@ -46,6 +46,17 @@ def parse_product_links(url):
     }
     return about_product
 
+def save_csv(results):
+    keys = results[0].keys()
+    try:
+        with open('products_info.csv', 'w', encoding='utf-8') as file:
+            product_writer = csv.DictWriter(file, keys)
+            product_writer.writeheader()
+            product_writer.writerows(results)
+    except NotImplementedError as err:
+        print(f"Can't be written {err}")
+
+
 
 results = []
 for y in range(1, 5):
@@ -54,9 +65,5 @@ for y in range(1, 5):
     for product in product_links:
         results.append(parse_product_links(product))
     print(f'In Total {len(results)}')
-    print(results)
-    
-
-
-
+save_csv(results)
 
