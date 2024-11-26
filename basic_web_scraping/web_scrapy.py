@@ -42,15 +42,16 @@ def parse_product_links(url):
     }
     return about_product
 
+def main():
+    results = []
+    for y in range(1, 5):
+        print(f'Page Number {y}')
+        product_links = get_links(y)
+        for product in product_links:
+            results.append(parse_product_links(product))
+        print(f'In Total {len(results)}')
+    get_csv.save_csv(results)
+    get_json.save_json(results)
 
-results = []
-for y in range(1, 5):
-    print(f'Page Number {y}')
-    product_links = get_links(y)
-    for product in product_links:
-        results.append(parse_product_links(product))
-    print(f'In Total {len(results)}')
-get_csv.save_csv(results)
-get_json.save_json(results)
-
-
+if __name__ == '__main__':
+    main()
